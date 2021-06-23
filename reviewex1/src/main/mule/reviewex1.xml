@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="5e3c973d-7750-43cd-af83-522d7b4ac01b" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="reviewex1Flow" doc:id="3ac7cb2c-a76c-488c-87f4-ea8e90f81bd8">
+		<http:listener doc:name="Listener" doc:id="4e87f695-6dec-4273-83e3-5093e9cd1c36" config-ref="HTTP_Listener_config" path="/reviewex1"/>
+		<set-variable value="#[attributes.queryParams.fname]" doc:name="Set Variable" doc:id="b56abdbd-abe4-46cc-86b6-ddf7dd6de950" variableName="fname"/>
+		<ee:transform doc:name="Transform Message" doc:id="2162e356-59ca-4fc3-bc96-57885ae286a9">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+
+---
+
+//("Hello"  " " ++ vars.fname ++ ", welcome to Mulesoft" ++ "," ++ " today is " ++  (now() as String {format: "yyyy-MM-dd"}))
+("Hello" ++ " " ++ vars.fname ++ ", welcome to MuleSoft" ++ ", " ++ "today is " ++ (now() as String {format: "yyyy-MM-dd"}))
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
